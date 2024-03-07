@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stopwatch</title>
+  <style>
+    body {
+      font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+      text-align: center;
+      background-color: #f0f0f0;
+      padding-top: 50px;
+    }
+    #display {
+      font-size: 3em;
+      margin-bottom: 20px;
+      background-color: #09c2e7;
+      color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(2, 196, 240, 0.2);
+      width: 200px;
+      display: inline-block;
+    }
+    .button-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    button {
+      font-size: 1.5em;
+      padding: 15px 25px;
+      margin: 0 10px;
+      cursor: pointer;
+      border: none;
+      background-color: #1a1d1a;
+      color: white;
+      border-radius: 10px;
+      transition: background-color 0.3s;
+      box-shadow: 0 4px 6px rgba(4, 177, 234, 0.1);
+      outline: none;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+<div id="display">00:00:00</div>
+<div class="button-container">
+  <button id="startButton" onclick="start()">Start</button>
+  <button id="pauseButton" onclick="pause()" disabled>Pause</button>
+  <button id="resetButton" onclick="reset()">Reset</button>
+</div>
+
+<script>
+  var startTime; 
+  var running = false; 
+  var paused = false; 
+  var elapsedTime = 0; 
+
+  function start() {
+    if (!running) {
+      
+      startTime = Date.now() - elapsedTime;
+      interval = setInterval(updateTime, 1000);
+      document.getElementById("startButton").innerText = "Start";
+      document.getElementById("pauseButton").disabled = false;
+      document.getElementById("resetButton").disabled = false;
+    }
+    running = true; 
+  }
+
+  function pause() {
+    if (running && !paused) {
+      clearInterval(interval);
+      document.getElementById("startButton").innerText = "Resume";
+      paused = true; 
+    } else if (paused) {
+      startTime = Date.now() - elapsedTime;
+      interval = setInterval(updateTime, 1000);
+      document.getElementById("startButton").innerText = "Start";
+      paused = false; 
+    }
+  }
+
+  function updateTime() {
+    var currentTime = Date.now();
+    elapsedTime = currentTime - startTime;
+    displayTime(elapsedTime);
+  }
+
+  function displayTime(time) {
+    var seconds = Math.floor((time / 1000) % 60);
+    var minutes = Math.floor((time / (1000 * 60)) % 60);
+    var hours = Math.floor(time / (1000 * 60 * 60));
+
+    hours = (hours < 10) ? "0" + hours : hours;
+    minutes = (minutes < 10) ? "0" + minutes : minutes;
+    seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+    document.getElementById("display").innerText = hours + ":" + minutes + ":" + seconds;
+  }
+
+  function reset() {
+    clearInterval(interval);
+    running = false;
+    paused = false;
+    elapsedTime = 0;
+    displayTime(elapsedTime);
+    document.getElementById("startButton").innerText = "Start";
+    document.getElementById("pauseButton").disabled = true;
+    document.getElementById("resetButton").disabled = true;
+  }
+</script>
+
+</body>
+</html>
